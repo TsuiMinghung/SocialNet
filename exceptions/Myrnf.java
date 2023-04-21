@@ -37,6 +37,6 @@ public class Myrnf extends RelationNotFoundException {
 
     @Override
     public void print() {
-        System.out.printf("rnf-%d,%d-%d,%d-%d%n",total,id1,count1,id2,count2);
+        System.out.printf("rnf-%d, %d-%d, %d-%d%n",total,id1,count1,id2,count2);
     }
 }

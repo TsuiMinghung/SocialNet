@@ -26,6 +26,6 @@ public class Mypinf extends PersonIdNotFoundException {
 
     @Override
     public void print() {
-        System.out.printf("pinf-%d,%d-%d%n",total,id,count);
+        System.out.printf("pinf-%d, %d-%d%n",total,id,count);
     }
 }

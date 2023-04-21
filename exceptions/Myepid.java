@@ -26,6 +26,6 @@ public class Myepid extends EqualPersonIdException {
 
     @Override
     public void print() {
-        System.out.printf("epi-%d,%d-%d%n",total,id,count);
+        System.out.printf("epi-%d, %d-%d%n",total,id,count);
     }
 }
