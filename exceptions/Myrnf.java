@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public class Myrnf extends RelationNotFoundException {
 
-    private static int total;
+    private static int total = 0;
     private static final HashMap<Integer,Integer> ID2COUNT = new HashMap<>();
 
     private final int id1;
@@ -15,6 +15,7 @@ public class Myrnf extends RelationNotFoundException {
     private final int count2;
 
     public Myrnf(int id1,int id2) {
+        ++total;
         this.id1 = id1;
         this.id2 = id2;
         if (ID2COUNT.containsKey(id1)) {

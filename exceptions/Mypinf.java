@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public class Mypinf extends PersonIdNotFoundException {
 
-    private static int total;
+    private static int total = 0;
     private static final HashMap<Integer,Integer> ID2COUNT = new HashMap<>();
 
     private final int id;

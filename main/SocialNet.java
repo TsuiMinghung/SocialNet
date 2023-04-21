@@ -10,11 +10,7 @@ import exceptions.Myer;
 import exceptions.Mypinf;
 import exceptions.Myrnf;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class SocialNet {
 
@@ -66,7 +62,7 @@ public class SocialNet {
             throw new Mypinf(id1);
         } else if (!contains(id2)) {
             throw new Mypinf(id2);
-        } else if (getPerson(id1).isLinked(getPerson(id2))) {
+        } else if (this.vertices.get(id1).isLinked(id2)) {
             throw new Myer(id1,id2);
         } else {
             this.vertices.get(id1).setAcquaintance(id2,value);
@@ -81,6 +77,7 @@ public class SocialNet {
             if (Objects.equals(ranks.get(f1), ranks.get(f2)) && f1 != f2) {
                 ranks.put(f2,ranks.get(f2) + 1);
             }
+            fathers.replaceAll((i,v) -> find(i));
         }
     }
 
@@ -88,8 +85,9 @@ public class SocialNet {
         if (id == fathers.get(id)) {
             return id;
         } else {
-            fathers.put(id,find(fathers.get(id)));
-            return fathers.get(id);
+            int result = find(fathers.get(id));
+            fathers.put(id,result);
+            return result;
         }
     }
 
@@ -135,7 +133,7 @@ public class SocialNet {
     private int triangleCount(HashMap<Integer, Set<Integer>> data) {
         int result = 0;
         for (Map.Entry<Integer,Set<Integer>> i : data.entrySet()) {
-            HashSet<Integer> doubleAccess = new HashSet<>();
+            List<Integer> doubleAccess = new ArrayList<>();
             for (int j : i.getValue()) {
                 doubleAccess.addAll(data.get(j));
             }
