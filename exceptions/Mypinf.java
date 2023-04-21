@@ -13,6 +13,7 @@ public class Mypinf extends PersonIdNotFoundException {
     private final int count;
 
     public Mypinf(int id) {
+        ++total;
         this.id = id;
         if (ID2COUNT.containsKey(id)) {
             this.count = ID2COUNT.get(id) + 1;
@@ -21,7 +22,6 @@ public class Mypinf extends PersonIdNotFoundException {
             ID2COUNT.put(id,1);
             this.count = 1;
         }
-        total += 1;
     }
 
     @Override

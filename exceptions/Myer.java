@@ -15,8 +15,13 @@ public class Myer extends EqualRelationException  {
 
     public Myer(int id1,int id2) {
         ++total;
-        this.id1 = id1;
-        this.id2 = id2;
+        if (id1 <= id2) {
+            this.id1 = id1;
+            this.id2 = id2;
+        } else {
+            this.id1 = id2;
+            this.id2 = id1;
+        }
         if (ID2COUNT.containsKey(id1)) {
             this.count1 = ID2COUNT.get(id1) + 1;
             ID2COUNT.put(id1,this.count1);
