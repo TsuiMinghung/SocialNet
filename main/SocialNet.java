@@ -11,6 +11,7 @@ import exceptions.Mypinf;
 import exceptions.Myrnf;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -32,11 +33,16 @@ public class SocialNet {
     private final HashMap<Integer,Vertex> vertices;
     private final HashMap<Integer,Integer> fathers;
     private final HashMap<Integer,Integer> ranks;
+    private int qbs;
+    private int qts;
+    private final BitSet record;//false means need recalculate,true means last value could be used
 
     private SocialNet() {
         this.vertices = new HashMap<>();
         this.fathers = new HashMap<>();
         this.ranks = new HashMap<>();
+        this.record = new BitSet(2);
+        this.record.clear();
     }
 
     public boolean contains(int id) {
@@ -55,6 +61,7 @@ public class SocialNet {
         if (vertices.containsKey(person.getId())) {
             throw new Myepid(person.getId());
         } else {
+            this.record.clear();
             vertices.put(person.getId(),
                     new Vertex(person.getId(), person.getName(), person.getAge(),person));
             fathers.put(person.getId(), person.getId());
@@ -71,6 +78,7 @@ public class SocialNet {
         } else if (this.vertices.get(id1).isLinked(id2)) {
             throw new Myer(id1,id2);
         } else {
+            this.record.clear();
             this.vertices.get(id1).setAcquaintance(id2,value);
             this.vertices.get(id2).setAcquaintance(id1,value);
             int f1 = fathers.get(id1);
@@ -121,19 +129,32 @@ public class SocialNet {
     }
 
     public int queryBlockSum() {
-        HashSet<Integer> result = new HashSet<>();
-        for (int id : fathers.keySet()) {
-            result.add(find(id));
+        if (!record.get(0)) {
+            HashSet<Integer> result = new HashSet<>();
+            for (int id : fathers.keySet()) {
+                result.add(find(id));
+            }
+            record.set(0);
+            qbs = result.size();
+            return result.size();
+        } else {
+            return qbs;
         }
-        return result.size();
     }
     
     public int queryTripleSum() {
-        HashMap<Integer,Set<Integer>> data = new HashMap<>();
-        for (Map.Entry<Integer,Vertex> id2v : vertices.entrySet()) {
-            data.put(id2v.getKey(),id2v.getValue().getAcquaintances());
+        if (!record.get(1)) {
+            HashMap<Integer, Set<Integer>> data = new HashMap<>();
+            for (Map.Entry<Integer, Vertex> id2v : vertices.entrySet()) {
+                data.put(id2v.getKey(), id2v.getValue().getAcquaintances());
+            }
+            int result = triangleCount(data);
+            record.set(1);
+            qts = result;
+            return result;
+        } else {
+            return qts;
         }
-        return triangleCount(data);
     }
 
     private int triangleCount(HashMap<Integer, Set<Integer>> data) {
