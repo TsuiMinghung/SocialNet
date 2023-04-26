@@ -29,7 +29,10 @@ public class Myer extends EqualRelationException  {
             this.count1 = 1;
             ID2COUNT.put(id1,this.count1);
         }
-
+        if (id1 == id2) {
+            this.count2 = this.count1;
+            return;
+        }
         if (ID2COUNT.containsKey(id2)) {
             this.count2 = ID2COUNT.get(id2) + 1;
             ID2COUNT.put(id2,this.count2);
