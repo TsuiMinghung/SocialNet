@@ -23,20 +23,23 @@ public class Myrnf extends RelationNotFoundException {
             this.id1 = id2;
             this.id2 = id1;
         }
-        if (ID2COUNT.containsKey(id1)) {
-            this.count1 = ID2COUNT.get(id1) + 1;
-            ID2COUNT.put(id1,this.count1);
+        if (ID2COUNT.containsKey(this.id1)) {
+            this.count1 = ID2COUNT.get(this.id1) + 1;
+            ID2COUNT.put(this.id1,this.count1);
         } else {
             this.count1 = 1;
-            ID2COUNT.put(id1,this.count1);
+            ID2COUNT.put(this.id1,this.count1);
         }
-
-        if (ID2COUNT.containsKey(id2)) {
-            this.count2 = ID2COUNT.get(id2) + 1;
-            ID2COUNT.put(id2,this.count2);
+        if (this.id1 == this.id2) {
+            this.count2 = this.count1;
+            return;
+        }
+        if (ID2COUNT.containsKey(this.id2)) {
+            this.count2 = ID2COUNT.get(this.id2) + 1;
+            ID2COUNT.put(this.id2,this.count2);
         } else {
             this.count2 = 1;
-            ID2COUNT.put(id2,this.count2);
+            ID2COUNT.put(this.id2,this.count2);
         }
     }
 
