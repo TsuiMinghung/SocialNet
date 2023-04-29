@@ -1,6 +1,6 @@
 package main;
 
-import com.oocourse.spec1.main.Person;
+import com.oocourse.spec2.main.Person;
 
 import java.util.HashMap;
 import java.util.Set;

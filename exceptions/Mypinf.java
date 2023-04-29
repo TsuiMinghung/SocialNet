@@ -1,6 +1,6 @@
 package exceptions;
 
-import com.oocourse.spec1.exceptions.PersonIdNotFoundException;
+import com.oocourse.spec2.exceptions.PersonIdNotFoundException;
 
 import java.util.HashMap;
 

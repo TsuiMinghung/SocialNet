@@ -1,10 +1,10 @@
 package main;
 
-import com.oocourse.spec1.exceptions.EqualPersonIdException;
-import com.oocourse.spec1.exceptions.EqualRelationException;
-import com.oocourse.spec1.exceptions.PersonIdNotFoundException;
-import com.oocourse.spec1.exceptions.RelationNotFoundException;
-import com.oocourse.spec1.main.Person;
+import com.oocourse.spec2.exceptions.EqualPersonIdException;
+import com.oocourse.spec2.exceptions.EqualRelationException;
+import com.oocourse.spec2.exceptions.PersonIdNotFoundException;
+import com.oocourse.spec2.exceptions.RelationNotFoundException;
+import com.oocourse.spec2.main.Person;
 import exceptions.Myepid;
 import exceptions.Myer;
 import exceptions.Mypinf;
