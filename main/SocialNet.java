@@ -277,7 +277,7 @@ public class SocialNet {
         } else {
             Message message = messages.get(id);
             if (message.getType() == 0) {
-                if (message.getPerson1().isLinked(message.getPerson2())) {
+                if (!message.getPerson1().isLinked(message.getPerson2())) {
                     throw new Myrnf(message.getPerson1().getId(),message.getPerson2().getId());
                 } else {
                     vertices.get(message.getPerson1().getId()).
@@ -390,22 +390,22 @@ public class SocialNet {
             if (!(afterData.get(id2).keySet().equals(beforeData.get(id2).keySet()))) { return 10; }
             for (int id : afterData.get(id1).keySet()) {
                 if (id != id2) {
-                    if (!Objects.equals(afterData.get(id1).get(id), beforeData.get(id1).get(id2))) {
+                    if (!Objects.equals(afterData.get(id1).get(id), beforeData.get(id1).get(id))) {
                         return 11;
                     }
                 }
             }
             for (int id : afterData.get(id2).keySet()) {
                 if (id != id1) {
-                    if (!Objects.equals(afterData.get(id1).get(id),beforeData.get(id1).get(id))) {
+                    if (!Objects.equals(afterData.get(id2).get(id),beforeData.get(id2).get(id))) {
                         return 12;
                     }
                 }
             }
-            if (afterData.get(id1).values().size()
-                    != beforeData.get(id1).values().size()) { return 13; }
-            if (afterData.get(id2).values().size()
-                    != beforeData.get(id2).values().size()) { return 14; }
+            if (afterData.get(id1).keySet().size()
+                    != afterData.get(id1).values().size()) { return 13; }
+            if (afterData.get(id2).keySet().size()
+                    != afterData.get(id2).values().size()) { return 14; }
         } else if (beforeData.get(id1).get(id2) + value <= 0) {
             if (afterData.get(id1).containsKey(id2)
                     || afterData.get(id2).containsKey(id1)) { return 15; }
