@@ -331,7 +331,8 @@ public class SocialNet {
     public int queryCoupleSum() {
         int result = 0;
         for (Vertex v : vertices.values()) {
-            if (vertices.get(v.getBestAcquaintance()).getBestAcquaintance() == v.getId()) {
+            if (v.hasBestAcquaintance() &&
+                    vertices.get(v.getBestAcquaintance()).getBestAcquaintance() == v.getId()) {
                 ++result;
             }
         }

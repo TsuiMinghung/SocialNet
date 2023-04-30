@@ -140,6 +140,10 @@ public class Vertex {
         edges.remove(new Edge(this.id,id,tmpValue));
     }
 
+    public boolean hasBestAcquaintance() {
+        return bestAcquaintance != null;
+    }
+
     public static void main(String[] argv) {}
 
 }
