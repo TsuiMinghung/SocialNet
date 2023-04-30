@@ -1,8 +1,14 @@
 package main;
 
+import com.oocourse.spec2.main.Message;
 import com.oocourse.spec2.main.Person;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class Vertex {
@@ -12,6 +18,11 @@ public class Vertex {
     private final String name;
     private final HashMap<Integer,Integer> acquaintances;
     private final Person person;
+    private int socialValue;
+    private final LinkedList<Message> messages;
+    private Integer bestAcquaintance;
+    private Integer maxValue;
+    private final HashSet<Edge> edges;
 
     public Vertex(int id,String name,int age,Person person) {
         this.id = id;
@@ -19,6 +30,10 @@ public class Vertex {
         this.age = age;
         this.acquaintances = new HashMap<>();
         this.person = person;
+        this.messages = new LinkedList<>();
+        this.socialValue = 0;
+        this.maxValue = null;
+        this.edges = new HashSet<>();
     }
 
     public int getId() {
@@ -31,6 +46,10 @@ public class Vertex {
 
     public int getAge() {
         return age;
+    }
+
+    public HashSet<Edge> getEdges() {
+        return edges;
     }
 
     public boolean isLinked(int id) {
@@ -64,10 +83,63 @@ public class Vertex {
     }
 
     public void setAcquaintance(int id,int value) {
-        this.acquaintances.put(id,value);
+        edges.remove(new Edge(this.id,id,acquaintances.getOrDefault(id,0)));
+        acquaintances.put(id,acquaintances.getOrDefault(id,0) + value);
+        edges.add(new Edge(this.id,id,acquaintances.get(id)));
+        if (maxValue == null || maxValue < value) {
+            maxValue = value;
+            bestAcquaintance = id;
+        }
     }
 
     public Set<Integer> getAcquaintances() {
         return acquaintances.keySet();
     }
+
+    public void addSocialValue(int num) {
+        socialValue += num;
+    }
+
+    public int getSocialValue() {
+        return socialValue;
+    }
+
+    public List<Message> getMessages() {
+        return new ArrayList<>(messages);
+    }
+
+    public List<Message> getReceivedMessages() {
+        int maxSize = 5;
+        if (messages.size() <= maxSize) {
+            return getMessages();
+        } else {
+            return messages.subList(0,maxSize);
+        }
+    }
+
+    public void recvMessage(Message message) {
+        messages.offerFirst(message);
+    }
+
+    public int getBestAcquaintance() {
+        return bestAcquaintance;
+    }
+
+    public void delAcquaintance(int id) {
+        int tmpValue = acquaintances.remove(id);
+        if (bestAcquaintance == id) {
+            maxValue = null;
+            bestAcquaintance = null;
+            for (Map.Entry<Integer,Integer> id2value : acquaintances.entrySet()) {
+                if (maxValue == null || id2value.getValue() < maxValue) {
+                    maxValue = id2value.getValue();
+                    bestAcquaintance = id2value.getKey();
+                }
+            }
+        }
+        edges.remove(new Edge(this.id,id,tmpValue));
+    }
+
+    public static void main(String[] argv) {}
+
 }

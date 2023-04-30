@@ -1,18 +1,17 @@
 package exceptions;
 
-import com.oocourse.spec2.exceptions.EqualPersonIdException;
+import com.oocourse.spec2.exceptions.MessageIdNotFoundException;
 
 import java.util.HashMap;
 
-public class Myepid extends EqualPersonIdException {
-
+public class Myminf extends MessageIdNotFoundException {
     private static int total = 0;
     private static final HashMap<Integer,Integer> ID2COUNT = new HashMap<>();
 
     private final int id;
     private final int count;
 
-    public Myepid(int id) {
+    public Myminf(int id) {
         ++total;
         this.id = id;
         if (ID2COUNT.containsKey(id)) {
@@ -26,6 +25,6 @@ public class Myepid extends EqualPersonIdException {
 
     @Override
     public void print() {
-        System.out.printf("epi-%d, %d-%d%n",total,id,count);
+        System.out.printf("minf-%d, %d-%d%n",total,id,count);
     }
 }

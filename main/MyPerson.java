@@ -1,6 +1,9 @@
 package main;
 
+import com.oocourse.spec2.main.Message;
 import com.oocourse.spec2.main.Person;
+
+import java.util.List;
 
 public class MyPerson implements Person {
 
@@ -49,5 +52,25 @@ public class MyPerson implements Person {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public void addSocialValue(int num) {
+        vertex.addSocialValue(num);
+    }
+
+    @Override
+    public int getSocialValue() {
+        return vertex.getSocialValue();
+    }
+
+    @Override
+    public List<Message> getMessages() {
+        return vertex.getMessages();
+    }
+
+    @Override
+    public List<Message> getReceivedMessages() {
+        return vertex.getReceivedMessages();
     }
 }
