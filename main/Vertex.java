@@ -90,6 +90,9 @@ public class Vertex {
             maxValue = value;
             bestAcquaintance = id;
         }
+        if (id == bestAcquaintance) {
+            maxValue = acquaintances.get(bestAcquaintance);
+        }
     }
 
     public Set<Integer> getAcquaintances() {
