@@ -11,6 +11,12 @@ public class Edge {
         this.weight = weight;
     }
 
+    public Edge(int v1,int v2) {
+        this.v1 = v1;
+        this.v2 = v2;
+        this.weight = 0;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Edge) {

@@ -26,9 +26,11 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Queue;
 import java.util.Set;
 
 public class SocialNet {
@@ -354,7 +356,8 @@ public class SocialNet {
             if (vertices.get(id1).queryValue(id2) + value <= 0) {
                 vertices.get(id1).delAcquaintance(id2);
                 vertices.get(id2).delAcquaintance(id1);
-                updateDisjoint();
+                updateDisjoint(id1);
+                updateDisjoint(id2);
             } else {
                 vertices.get(id1).setAcquaintance(id2,value);
                 vertices.get(id2).setAcquaintance(id1,value);
@@ -362,15 +365,23 @@ public class SocialNet {
         }
     }
 
-    private void updateDisjoint() {
-        fathers.replaceAll((i, v) -> i);
-        ranks.replaceAll((i, v) -> 1);
-        HashSet<Edge> edges = new HashSet<>();
-        for (Vertex v : vertices.values()) {
-            edges.addAll(v.getEdges());
-        }
-        for (Edge e : edges) {
-            merge(e.getV1(),e.getV2());
+    private void updateDisjoint(int id) {
+        Vertex v = vertices.get(id);
+        HashSet<Integer> visited = new HashSet<>(v.getAcquaintances());
+        visited.add(id);
+        fathers.put(id,id);
+        ranks.put(id,1);
+        Queue<Integer> queue = new LinkedList<>(v.getAcquaintances());
+        while (!queue.isEmpty()) {
+            int current = queue.poll();
+            fathers.put(current,id);
+            ranks.put(current,2);
+            for (int neighbor : vertices.get(current).getAcquaintances()) {
+                if (!visited.contains(neighbor)) {
+                    visited.add(neighbor);
+                    queue.offer(neighbor);
+                }
+            }
         }
     }
 
