@@ -86,7 +86,8 @@ public class Vertex {
         edges.remove(new Edge(this.id,id,acquaintances.getOrDefault(id,0)));
         acquaintances.put(id,acquaintances.getOrDefault(id,0) + value);
         edges.add(new Edge(this.id,id,acquaintances.get(id)));
-        if (bestAcquaintance == null || id == bestAcquaintance || maxValue == null || maxValue < value) {
+        if (bestAcquaintance == null || id == bestAcquaintance
+                || maxValue == null || maxValue < value) {
             refresh();
         }
     }
