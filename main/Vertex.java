@@ -86,12 +86,8 @@ public class Vertex {
         edges.remove(new Edge(this.id,id,acquaintances.getOrDefault(id,0)));
         acquaintances.put(id,acquaintances.getOrDefault(id,0) + value);
         edges.add(new Edge(this.id,id,acquaintances.get(id)));
-        if (maxValue == null || maxValue < value) {
-            maxValue = value;
-            bestAcquaintance = id;
-        }
-        if (id == bestAcquaintance) {
-            maxValue = acquaintances.get(bestAcquaintance);
+        if (bestAcquaintance == null || id == bestAcquaintance || maxValue == null || maxValue < value) {
+            refresh();
         }
     }
 
@@ -128,17 +124,21 @@ public class Vertex {
         return bestAcquaintance;
     }
 
+    private void refresh() {
+        maxValue = null;
+        bestAcquaintance = null;
+        for (Map.Entry<Integer,Integer> id2value : acquaintances.entrySet()) {
+            if (maxValue == null || id2value.getValue() < maxValue) {
+                maxValue = id2value.getValue();
+                bestAcquaintance = id2value.getKey();
+            }
+        }
+    }
+
     public void delAcquaintance(int id) {
         int tmpValue = acquaintances.remove(id);
         if (bestAcquaintance == id) {
-            maxValue = null;
-            bestAcquaintance = null;
-            for (Map.Entry<Integer,Integer> id2value : acquaintances.entrySet()) {
-                if (maxValue == null || id2value.getValue() < maxValue) {
-                    maxValue = id2value.getValue();
-                    bestAcquaintance = id2value.getKey();
-                }
-            }
+            refresh();
         }
         edges.remove(new Edge(this.id,id,tmpValue));
     }
