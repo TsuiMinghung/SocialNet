@@ -56,6 +56,7 @@ public class MyGroup implements Group {
 
     @Override
     public int getAgeMean() {
+        if (members.size() == 0) { return 0; }
         int result = 0;
         for (Vertex v : members.values()) {
             result += v.getAge();
@@ -65,6 +66,7 @@ public class MyGroup implements Group {
 
     @Override
     public int getAgeVar() {
+        if (members.size() == 0) { return 0; }
         int mean = getAgeMean();
         int result = 0;
         for (Vertex v : members.values()) {
