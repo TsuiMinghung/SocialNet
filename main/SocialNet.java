@@ -83,7 +83,7 @@ public class SocialNet {
         } else {
             this.record.clear();
             vertices.put(person.getId(),
-                    new Vertex(person.getId(), person.getName(), person.getAge(),person));
+                    Vertex.fetch(person.getId()));
             fathers.put(person.getId(), person.getId());
             ranks.put(person.getId(),1);
         }
@@ -277,6 +277,8 @@ public class SocialNet {
         } else {
             Message message = messages.get(id);
             if (message.getType() == 0) {
+                Person p1 = message.getPerson1();
+                Person p2 = message.getPerson2();
                 if (!message.getPerson1().isLinked(message.getPerson2())) {
                     throw new Myrnf(message.getPerson1().getId(),message.getPerson2().getId());
                 } else {

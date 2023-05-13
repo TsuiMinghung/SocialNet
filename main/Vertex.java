@@ -13,6 +13,12 @@ import java.util.Set;
 
 public class Vertex {
 
+    private static final HashMap<Integer,Vertex> INSTANCES = new HashMap<>();
+
+    public static Vertex fetch(int id) {
+        return INSTANCES.remove(id);
+    }
+
     private final int id;
     private final int age;
     private final String name;
@@ -34,6 +40,7 @@ public class Vertex {
         this.socialValue = 0;
         this.maxValue = null;
         this.edges = new HashSet<>();
+        INSTANCES.put(id,this);
     }
 
     public int getId() {
