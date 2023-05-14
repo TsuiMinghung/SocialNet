@@ -424,7 +424,7 @@ public class SocialNet {
             if (beforeData.get(id1).values().size()
                     != afterData.get(id1).keySet().size() + 1) { return 16; }
             if (beforeData.get(id2).values().size()
-                    != afterData.get(id2).keySet().size()) { return 17; }
+                    != afterData.get(id2).keySet().size() + 1) { return 17; }
             if (afterData.get(id1).values().size()
                     != afterData.get(id1).keySet().size()) { return 18; }
             if (afterData.get(id2).values().size()
