@@ -1,19 +1,12 @@
 package main;
 
-import com.oocourse.spec3.exceptions.AcquaintanceNotFoundException;
-import com.oocourse.spec3.exceptions.EqualGroupIdException;
-import com.oocourse.spec3.exceptions.EqualMessageIdException;
-import com.oocourse.spec3.exceptions.EqualPersonIdException;
-import com.oocourse.spec3.exceptions.EqualRelationException;
-import com.oocourse.spec3.exceptions.GroupIdNotFoundException;
-import com.oocourse.spec3.exceptions.MessageIdNotFoundException;
-import com.oocourse.spec3.exceptions.PersonIdNotFoundException;
-import com.oocourse.spec3.exceptions.RelationNotFoundException;
+import com.oocourse.spec3.exceptions.*;
 import com.oocourse.spec3.main.Group;
 import com.oocourse.spec3.main.Message;
 import com.oocourse.spec3.main.Network;
 import com.oocourse.spec3.main.Person;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -109,7 +102,8 @@ public class MyNetwork implements Network {
     }
 
     @Override
-    public void addMessage(Message message) throws EqualMessageIdException, EqualPersonIdException {
+    public void addMessage(Message message) throws EqualMessageIdException,
+            EqualPersonIdException, EmojiIdNotFoundException {
         SocialNet.getInstance().addMessage(message);
     }
 
@@ -146,9 +140,42 @@ public class MyNetwork implements Network {
     }
 
     @Override
-    public int modifyRelationOKTest(int id1, int id2, int value, HashMap<Integer,
-            HashMap<Integer, Integer>> beforeData,
-                                    HashMap<Integer, HashMap<Integer, Integer>> afterData) {
-        return SocialNet.getInstance().modifyRelationOKTest(id1,id2,value,beforeData,afterData);
+    public boolean containsEmojiId(int id) {
+        return SocialNet.getInstance().containsEmojiId(id);
+    }
+
+    @Override
+    public void storeEmojiId(int id) throws EqualEmojiIdException {
+        SocialNet.getInstance().storeEmojiId(id);
+    }
+
+    @Override
+    public int queryMoney(int id) throws PersonIdNotFoundException {
+        return SocialNet.getInstance().queryMoney(id);
+    }
+
+    @Override
+    public int queryPopularity(int id) throws EmojiIdNotFoundException {
+        return SocialNet.getInstance().queryPopularity(id);
+    }
+
+    @Override
+    public int deleteColdEmoji(int limit) {
+        return SocialNet.getInstance().deleteColdEmoji(limit);
+    }
+
+    @Override
+    public void clearNotices(int personId) throws PersonIdNotFoundException {
+        SocialNet.getInstance().clearNotices(personId);
+    }
+
+    @Override
+    public int queryLeastMoments(int id) throws PersonIdNotFoundException, PathNotFoundException {
+        return SocialNet.getInstance().queryLeastMoments(id);
+    }
+
+    @Override
+    public int deleteColdEmojiOKTest(int limit, ArrayList<HashMap<Integer, Integer>> beforeData, ArrayList<HashMap<Integer, Integer>> afterData, int result) {
+        return SocialNet.getInstance().deleteColdEmojiOKTest(limit,beforeData,afterData,result);
     }
 }

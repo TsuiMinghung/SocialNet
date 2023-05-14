@@ -73,4 +73,14 @@ public class MyPerson implements Person {
     public List<Message> getReceivedMessages() {
         return vertex.getReceivedMessages();
     }
+
+    @Override
+    public void addMoney(int num) {
+        vertex.addMoney(num);
+    }
+
+    @Override
+    public int getMoney() {
+        return vertex.getMoney();
+    }
 }

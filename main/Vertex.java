@@ -1,6 +1,7 @@
 package main;
 
 import com.oocourse.spec3.main.Message;
+import com.oocourse.spec3.main.NoticeMessage;
 import com.oocourse.spec3.main.Person;
 
 import java.util.ArrayList;
@@ -152,6 +153,18 @@ public class Vertex {
 
     public boolean hasBestAcquaintance() {
         return bestAcquaintance != null;
+    }
+
+    public void addMoney(int num) {
+        money += num;
+    }
+
+    public int getMoney() {
+        return money;
+    }
+
+    public void clearNotices() {
+        messages.removeIf(m -> m instanceof NoticeMessage);
     }
 
     public static void main(String[] argv) {}

@@ -1,37 +1,48 @@
 package main;
 
 import com.oocourse.spec3.exceptions.AcquaintanceNotFoundException;
+import com.oocourse.spec3.exceptions.EmojiIdNotFoundException;
+import com.oocourse.spec3.exceptions.EqualEmojiIdException;
 import com.oocourse.spec3.exceptions.EqualGroupIdException;
 import com.oocourse.spec3.exceptions.EqualMessageIdException;
 import com.oocourse.spec3.exceptions.EqualPersonIdException;
 import com.oocourse.spec3.exceptions.EqualRelationException;
 import com.oocourse.spec3.exceptions.GroupIdNotFoundException;
 import com.oocourse.spec3.exceptions.MessageIdNotFoundException;
+import com.oocourse.spec3.exceptions.PathNotFoundException;
 import com.oocourse.spec3.exceptions.PersonIdNotFoundException;
 import com.oocourse.spec3.exceptions.RelationNotFoundException;
+import com.oocourse.spec3.main.EmojiMessage;
 import com.oocourse.spec3.main.Group;
 import com.oocourse.spec3.main.Message;
 import com.oocourse.spec3.main.Person;
+import com.oocourse.spec3.main.RedEnvelopeMessage;
 import exceptions.Myanf;
+import exceptions.Myeei;
 import exceptions.Myegi;
+import exceptions.Myeinf;
 import exceptions.Myemi;
 import exceptions.Myepi;
 import exceptions.Myer;
 import exceptions.Myginf;
 import exceptions.Myminf;
 import exceptions.Mypinf;
+import exceptions.Mypnf;
 import exceptions.Myrnf;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SocialNet {
 
@@ -49,6 +60,7 @@ public class SocialNet {
     private final HashMap<Integer,Integer> ranks;
     private final HashMap<Integer,MyMessage> messages;
     private final HashMap<Integer,MyGroup> groups;
+    private final HashMap<Integer,Integer> emojiId2Heat;
     private int qbs;
     private int qts;
     private final BitSet record;//false means need recalculate,true means last value could be used
@@ -60,6 +72,7 @@ public class SocialNet {
         this.record = new BitSet(2);
         this.messages = new HashMap<>();
         this.groups = new HashMap<>();
+        this.emojiId2Heat = new HashMap<>();
         this.record.clear();
     }
 
@@ -258,14 +271,18 @@ public class SocialNet {
     }
 
     public void addMessage(Message message) throws EqualMessageIdException,
-            EqualPersonIdException {
+            EqualPersonIdException, EmojiIdNotFoundException {
         if (messages.containsKey(message.getId())) {
             throw new Myemi(message.getId());
+        } else if (message instanceof EmojiMessage &&
+                !containsEmojiId(((EmojiMessage) message).getEmojiId())) {
+            throw new Myeinf(message.getId());
         } else if (message.getType() == 0 && message.getPerson1() == message.getPerson2()) {
             throw new Myepi(message.getPerson1().getId());
         } else {
             messages.put(message.getId(),MyMessage.fetch(message.getId()));
         }
+
     }
 
     public Message getMessage(int id) {
@@ -282,10 +299,17 @@ public class SocialNet {
                 if (!message.getPerson1().isLinked(message.getPerson2())) {
                     throw new Myrnf(message.getPerson1().getId(),message.getPerson2().getId());
                 } else {
-                    vertices.get(message.getPerson1().getId()).
-                            addSocialValue(message.getSocialValue());
-                    vertices.get(message.getPerson2().getId()).
-                            addSocialValue(message.getSocialValue());
+                    Vertex v1 = vertices.get(message.getPerson1().getId());
+                    v1.addSocialValue(message.getSocialValue());
+                    Vertex v2 = vertices.get(message.getPerson2().getId());
+                    v2.addSocialValue(message.getSocialValue());
+                    if (message instanceof RedEnvelopeMessage) {
+                        v1.addMoney(-((RedEnvelopeMessage) message).getMoney());
+                        v2.addMoney(((RedEnvelopeMessage) message).getMoney());
+                    } else if (message instanceof EmojiMessage) {
+                        emojiId2Heat.put(((EmojiMessage) message).getEmojiId(), emojiId2Heat
+                                .get(((EmojiMessage) message).getEmojiId()) + 1);
+                    }
                     vertices.get(message.getPerson2().getId()).recvMessage(message);
                 }
             } else if (message.getType() == 1) {
@@ -294,6 +318,19 @@ public class SocialNet {
                 } else {
                     for (int pid : groups.get(message.getGroup().getId()).getMembers()) {
                         vertices.get(pid).addSocialValue(message.getSocialValue());
+                    }
+                    if (message instanceof RedEnvelopeMessage) {
+                        int money = ((RedEnvelopeMessage) message).getMoney()
+                                / message.getGroup().getSize();
+                        message.getPerson1().addMoney(-(money * message.getGroup().getSize() - 1));
+                        for (int pid : groups.get(message.getGroup().getId()).getMembers()) {
+                            if (pid != message.getPerson1().getId()) {
+                                vertices.get(pid).addMoney(money);
+                            }
+                        }
+                    } else if (message instanceof EmojiMessage) {
+                        emojiId2Heat.put(((EmojiMessage) message).getEmojiId(), emojiId2Heat
+                                .get(((EmojiMessage) message).getEmojiId()) + 1);
                     }
                 }
             }
@@ -386,86 +423,179 @@ public class SocialNet {
         }
     }
 
-    private int extraTest(int id1,int id2,int value,
-                          HashMap<Integer,HashMap<Integer,Integer>> beforeData,
-                          HashMap<Integer,HashMap<Integer,Integer>> afterData) {
-        if (beforeData.get(id1).get(id2) + value > 0) {
-            if (!(afterData.get(id1).containsKey(id2)
-                    && afterData.get(id2).containsKey(id1))) { return 4; }
-            if (afterData.get(id1).get(id2)
-                    != beforeData.get(id1).get(id2) + value) { return 5; }
-            if (afterData.get(id2).get(id1)
-                    != beforeData.get(id2).get(id1) + value) { return 6; }
-            if (afterData.get(id1).size() != beforeData.get(id1).size()) { return 7; }
-            if (afterData.get(id2).size() != beforeData.get(id2).size()) { return 8; }
-            if (!(afterData.get(id1).keySet().equals(beforeData.get(id1).keySet()))) { return 9; }
-            if (!(afterData.get(id2).keySet().equals(beforeData.get(id2).keySet()))) { return 10; }
-            for (int id : afterData.get(id1).keySet()) {
-                if (id != id2) {
-                    if (!Objects.equals(afterData.get(id1).get(id), beforeData.get(id1).get(id))) {
-                        return 11;
-                    }
+    public boolean containsEmojiId(int id) {
+        return emojiId2Heat.containsKey(id);
+    }
+
+    public void storeEmojiId(int id) throws EqualEmojiIdException {
+        if (emojiId2Heat.containsKey(id)) {
+            throw new Myeei(id);
+        } else {
+            emojiId2Heat.put(id,0);
+        }
+    }
+
+    public int queryMoney(int id) throws PersonIdNotFoundException {
+        if (!contains(id)) {
+            throw new Mypinf(id);
+        } else {
+            return vertices.get(id).getMoney();
+        }
+    }
+
+    public int queryPopularity(int id) throws EmojiIdNotFoundException {
+        if (!containsEmojiId(id)) {
+            throw new Myeinf(id);
+        } else {
+            return emojiId2Heat.get(id);
+        }
+    }
+
+    public int deleteColdEmoji(int limit) {
+        emojiId2Heat.entrySet().stream().filter(k ->
+                (k.getValue() < limit)).map(Map.Entry::getKey).collect(Collectors.toList()).
+                forEach(emojiId2Heat.keySet()::remove);
+        messages.entrySet().stream().filter(k -> (k.getValue() instanceof EmojiMessage &&
+                !emojiId2Heat.containsKey(((EmojiMessage) k.getValue()).getEmojiId()))
+        ).map(Map.Entry::getKey).collect(Collectors.toList()).forEach(messages.keySet()::remove);
+        return emojiId2Heat.size();
+    }
+
+    public void clearNotices(int personId) throws PersonIdNotFoundException {
+        if (!contains(personId)) {
+            throw new Mypinf(personId);
+        } else {
+            vertices.get(personId).clearNotices();
+        }
+    }
+
+    public int queryLeastMoments(int id) throws PersonIdNotFoundException, PathNotFoundException {
+        if (!contains(id)) {
+            throw new Mypinf(id);
+        } else {
+            Vertex v = vertices.get(id);
+            int result = Integer.MAX_VALUE;
+
+            for (int neighborId : v.getAcquaintances()) {
+                int ret = dijkstra(id,neighborId);
+                if (ret == Integer.MAX_VALUE) {
+                    continue;
+                }
+                result = Math.min(result,ret + v.queryValue(neighborId));
+            }
+            if (result == Integer.MAX_VALUE) {
+                throw new Mypnf(id);
+            } else {
+                return result;
+            }
+        }
+    }
+
+    private int dijkstra(int src,int dst) {
+        PriorityQueue<Node> pq = new PriorityQueue<>();
+        HashMap<Integer,Integer> id2dist = new HashMap<>();
+        for (int id : vertices.keySet()) {
+            id2dist.put(id,Integer.MAX_VALUE);
+        }
+        id2dist.put(src,0);
+        pq.add(new Node(src, 0));
+        HashSet<Integer> settled = new HashSet<>();
+        while (!settled.contains(dst)) {
+            if (pq.isEmpty()) {
+                return id2dist.getOrDefault(dst,Integer.MAX_VALUE);
+            }
+            int u = pq.remove().node;
+            if (settled.contains(u)) {
+                continue;
+            }
+            settled.add(u);
+            for (int v : vertices.get(u).getAcquaintances()) {
+                if ((u == src && v == dst) || (u == dst && v == src)) {
+                    continue;
+                }
+                int newDist = id2dist.get(u) + vertices.get(u).queryValue(v);
+                if (newDist < id2dist.get(v)) {
+                    id2dist.put(v,newDist);
+                }
+                pq.add(new Node(v, id2dist.get(v)));
+            }
+        }
+        return id2dist.get(dst);
+    }
+
+    public int deleteColdEmojiOKTest(int limit, ArrayList<HashMap<Integer, Integer>> beforeData,
+                                     ArrayList<HashMap<Integer, Integer>> afterData, int result) {
+        HashMap<Integer,Integer> oldEmoji = beforeData.get(0);
+        HashMap<Integer,Integer> newEmoji = afterData.get(0);
+        HashMap<Integer,Integer> newMessage = afterData.get(1);
+        int length = 0;
+        for (Map.Entry<Integer,Integer> id2heat : oldEmoji.entrySet()) {
+            if (id2heat.getValue() >= limit) {
+                ++length;
+                if (!newEmoji.containsKey(id2heat.getKey())) {
+                    return 1;
                 }
             }
-            for (int id : afterData.get(id2).keySet()) {
-                if (id != id1) {
-                    if (!Objects.equals(afterData.get(id2).get(id),beforeData.get(id2).get(id))) {
-                        return 12;
-                    }
+        }
+        for (Map.Entry<Integer,Integer> id2heat : newEmoji.entrySet()) {
+            if (!oldEmoji.containsKey(id2heat.getKey())) {
+                return 2;
+            } else {
+                if (!Objects.equals(oldEmoji.get(id2heat.getKey()), id2heat.getValue())) {
+                    return 2;
                 }
             }
-            if (afterData.get(id1).keySet().size()
-                    != afterData.get(id1).values().size()) { return 13; }
-            if (afterData.get(id2).keySet().size()
-                    != afterData.get(id2).values().size()) { return 14; }
-        } else if (beforeData.get(id1).get(id2) + value <= 0) {
-            if (afterData.get(id1).containsKey(id2)
-                    || afterData.get(id2).containsKey(id1)) { return 15; }
-            if (beforeData.get(id1).values().size()
-                    != afterData.get(id1).keySet().size() + 1) { return 16; }
-            if (beforeData.get(id2).values().size()
-                    != afterData.get(id2).keySet().size() + 1) { return 17; }
-            if (afterData.get(id1).values().size()
-                    != afterData.get(id1).keySet().size()) { return 18; }
-            if (afterData.get(id2).values().size()
-                    != afterData.get(id2).keySet().size()) { return 19; }
-            for (int id : afterData.get(id1).keySet()) {
-                if ((!beforeData.get(id1).containsKey(id)) || !Objects.equals(
-                        afterData.get(id1).get(id), beforeData.get(id1).get(id))) {
-                    return 20;
+        }
+        if (length != newEmoji.size()) {
+            return 3;
+        }
+        if (newEmoji.keySet().size() != newEmoji.values().size()) {
+            return 4;
+        }
+        length = 0;
+        HashMap<Integer,Integer> oldMessage = beforeData.get(1);
+        for (Map.Entry<Integer,Integer> m2e : oldMessage.entrySet()) {
+            if (m2e.getValue() != null && newEmoji.containsKey(m2e.getValue())) {
+                if (!newMessage.containsKey(m2e.getKey())
+                        || !Objects.equals(newMessage.get(m2e.getKey()), m2e.getValue())) {
+                    return 5;
                 }
-            }
-            for (int id : afterData.get(id2).keySet()) {
-                if ((!beforeData.get(id2).containsKey(id)) || !Objects.equals(
-                        beforeData.get(id2).get(id), afterData.get(id2).get(id))) {
-                    return 21;
+                ++length;
+            } else if (m2e.getValue() == null) {
+                if (!newMessage.containsKey(m2e.getKey())
+                        || !Objects.equals(newMessage.get(m2e.getKey()),m2e.getValue())) {
+                    return 6;
                 }
+                ++length;
             }
+        }
+        if (length != newMessage.size()) {
+            return 7;
+        }
+        if (result != newEmoji.size()) {
+            return 8;
         }
         return 0;
     }
 
-    public int modifyRelationOKTest(int id1,int id2,int value,
-                                    HashMap<Integer, HashMap<Integer,Integer>> beforeData,
-                                    HashMap<Integer,HashMap<Integer,Integer>> afterData) {
-        if (!beforeData.containsKey(id1) || !beforeData.containsKey(id2)
-                || id1 == id2 || !beforeData.get(id1).containsKey(id2)) {
-            return beforeData.equals(afterData) ? 0 : -1;
-        } else {
-            if (!(beforeData.size() == afterData.size())) {
+    public static class Node implements Comparator<Node> {
+        private final int node;
+        private final int cost;
+
+        public Node(int node,int cost) {
+            this.node = node;
+            this.cost = cost;
+        }
+
+        @Override
+        public int compare(Node node1,Node node2) {
+            if (node1.cost < node2.cost) {
+                return -1;
+            }
+            if (node1.cost > node2.cost) {
                 return 1;
             }
-            if (!(beforeData.keySet().equals(afterData.keySet()))) {
-                return 2;
-            }
-            for (int id : beforeData.keySet()) {
-                if (id != id1 && id != id2) {
-                    if (!(beforeData.get(id).equals(afterData.get(id)))) {
-                        return 3;
-                    }
-                }
-            }
-            return extraTest(id1,id2,value,beforeData,afterData);
+            return 0;
         }
     }
 }
