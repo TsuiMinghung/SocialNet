@@ -313,7 +313,7 @@ public class SocialNet {
         if (!contains(id)) {
             throw new Mypinf(id);
         } else {
-            return vertices.get(id).getMessages();
+            return vertices.get(id).getReceivedMessages();
         }
     }
 
