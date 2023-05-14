@@ -3,13 +3,7 @@ package main;
 import com.oocourse.spec2.main.Message;
 import com.oocourse.spec2.main.Person;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Vertex {
 
@@ -96,6 +90,8 @@ public class Vertex {
         if (bestAcquaintance == null ||
                 id == bestAcquaintance || maxValue < acquaintances.get(id)) {
             refresh();
+        } else if (Objects.equals(maxValue, acquaintances.get(id))) {
+            bestAcquaintance = Math.min(id,bestAcquaintance);
         }
     }
 
