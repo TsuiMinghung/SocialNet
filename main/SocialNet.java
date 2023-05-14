@@ -15,6 +15,7 @@ import com.oocourse.spec3.exceptions.RelationNotFoundException;
 import com.oocourse.spec3.main.EmojiMessage;
 import com.oocourse.spec3.main.Group;
 import com.oocourse.spec3.main.Message;
+import com.oocourse.spec3.main.NoticeMessage;
 import com.oocourse.spec3.main.Person;
 import com.oocourse.spec3.main.RedEnvelopeMessage;
 import exceptions.Myanf;
@@ -32,7 +33,6 @@ import exceptions.Myrnf;
 
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -58,7 +58,7 @@ public class SocialNet {
     private final HashMap<Integer,Vertex> vertices;
     private final HashMap<Integer,Integer> fathers;
     private final HashMap<Integer,Integer> ranks;
-    private final HashMap<Integer,MyMessage> messages;
+    private final HashMap<Integer,Message> messages;
     private final HashMap<Integer,MyGroup> groups;
     private final HashMap<Integer,Integer> emojiId2Heat;
     private int qbs;
@@ -280,7 +280,15 @@ public class SocialNet {
         } else if (message.getType() == 0 && message.getPerson1() == message.getPerson2()) {
             throw new Myepi(message.getPerson1().getId());
         } else {
-            messages.put(message.getId(),MyMessage.fetch(message.getId()));
+            if (message instanceof RedEnvelopeMessage) {
+                messages.put(message.getId(),MyRedEnvelope.fetch(message.getId()));
+            } else if (message instanceof NoticeMessage) {
+                messages.put(message.getId(),MyNotice.fetch(message.getId()));
+            } else if (message instanceof EmojiMessage) {
+                messages.put(message.getId(),MyEmoji.fetch(message.getId()));
+            } else {
+                messages.put(message.getId(),MyMessage.fetch(message.getId()));
+            }
         }
 
     }
@@ -504,7 +512,7 @@ public class SocialNet {
             if (pq.isEmpty()) {
                 return id2dist.getOrDefault(dst,Integer.MAX_VALUE);
             }
-            int u = pq.remove().node;
+            int u = pq.remove().getNode();
             if (settled.contains(u)) {
                 continue;
             }
@@ -576,27 +584,6 @@ public class SocialNet {
             return 8;
         }
         return 0;
-    }
-
-    public static class Node implements Comparator<Node> {
-        private final int node;
-        private final int cost;
-
-        public Node(int node,int cost) {
-            this.node = node;
-            this.cost = cost;
-        }
-
-        @Override
-        public int compare(Node node1,Node node2) {
-            if (node1.cost < node2.cost) {
-                return -1;
-            }
-            if (node1.cost > node2.cost) {
-                return 1;
-            }
-            return 0;
-        }
     }
 }
 
