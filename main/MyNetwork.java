@@ -1,6 +1,17 @@
 package main;
 
-import com.oocourse.spec3.exceptions.*;
+import com.oocourse.spec3.exceptions.AcquaintanceNotFoundException;
+import com.oocourse.spec3.exceptions.EmojiIdNotFoundException;
+import com.oocourse.spec3.exceptions.EqualEmojiIdException;
+import com.oocourse.spec3.exceptions.EqualGroupIdException;
+import com.oocourse.spec3.exceptions.EqualMessageIdException;
+import com.oocourse.spec3.exceptions.EqualPersonIdException;
+import com.oocourse.spec3.exceptions.EqualRelationException;
+import com.oocourse.spec3.exceptions.GroupIdNotFoundException;
+import com.oocourse.spec3.exceptions.MessageIdNotFoundException;
+import com.oocourse.spec3.exceptions.PathNotFoundException;
+import com.oocourse.spec3.exceptions.PersonIdNotFoundException;
+import com.oocourse.spec3.exceptions.RelationNotFoundException;
 import com.oocourse.spec3.main.Group;
 import com.oocourse.spec3.main.Message;
 import com.oocourse.spec3.main.Network;
@@ -175,7 +186,8 @@ public class MyNetwork implements Network {
     }
 
     @Override
-    public int deleteColdEmojiOKTest(int limit, ArrayList<HashMap<Integer, Integer>> beforeData, ArrayList<HashMap<Integer, Integer>> afterData, int result) {
-        return SocialNet.getInstance().deleteColdEmojiOKTest(limit,beforeData,afterData,result);
+    public int deleteColdEmojiOKTest(int limit, ArrayList<HashMap<Integer, Integer>> beforeData,
+                                     ArrayList<HashMap<Integer, Integer>> afterData, int result) {
+        return OkTest.deleteColdEmojiOKTest(limit,beforeData,afterData,result);
     }
 }

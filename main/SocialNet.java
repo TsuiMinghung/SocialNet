@@ -276,7 +276,7 @@ public class SocialNet {
             throw new Myemi(message.getId());
         } else if (message instanceof EmojiMessage &&
                 !containsEmojiId(((EmojiMessage) message).getEmojiId())) {
-            throw new Myeinf(message.getId());
+            throw new Myeinf(((EmojiMessage) message).getEmojiId());
         } else if (message.getType() == 0 && message.getPerson1() == message.getPerson2()) {
             throw new Myepi(message.getPerson1().getId());
         } else {
@@ -316,8 +316,7 @@ public class SocialNet {
                         v2.addMoney(((RedEnvelopeMessage) message).getMoney());
                     } else if (message instanceof EmojiMessage) {
                         emojiId2Heat.put(((EmojiMessage) message).getEmojiId(), emojiId2Heat
-                                .get(((EmojiMessage) message).getEmojiId()) + 1);
-                    }
+                                .get(((EmojiMessage) message).getEmojiId()) + 1); }
                     vertices.get(message.getPerson2().getId()).recvMessage(message);
                 }
             } else if (message.getType() == 1) {
@@ -325,8 +324,7 @@ public class SocialNet {
                     throw new Mypinf(message.getPerson1().getId());
                 } else {
                     for (int pid : groups.get(message.getGroup().getId()).getMembers()) {
-                        vertices.get(pid).addSocialValue(message.getSocialValue());
-                    }
+                        vertices.get(pid).addSocialValue(message.getSocialValue()); }
                     if (message instanceof RedEnvelopeMessage) {
                         int money = ((RedEnvelopeMessage) message).getMoney()
                                 / message.getGroup().getSize();
@@ -338,10 +336,7 @@ public class SocialNet {
                         }
                     } else if (message instanceof EmojiMessage) {
                         emojiId2Heat.put(((EmojiMessage) message).getEmojiId(), emojiId2Heat
-                                .get(((EmojiMessage) message).getEmojiId()) + 1);
-                    }
-                }
-            }
+                                .get(((EmojiMessage) message).getEmojiId()) + 1); } } }
             messages.remove(message.getId());
         }
     }
@@ -349,17 +344,13 @@ public class SocialNet {
     public int querySocialValue(int id) throws PersonIdNotFoundException {
         if (!contains(id)) {
             throw new Mypinf(id);
-        } else {
-            return vertices.get(id).getSocialValue();
-        }
+        } else { return vertices.get(id).getSocialValue(); }
     }
 
     public List<Message> queryReceivedMessages(int id) throws PersonIdNotFoundException {
         if (!contains(id)) {
             throw new Mypinf(id);
-        } else {
-            return vertices.get(id).getReceivedMessages();
-        }
+        } else { return vertices.get(id).getReceivedMessages(); }
     }
 
     public int queryBestAcquaintance(int id) throws PersonIdNotFoundException,
@@ -369,9 +360,7 @@ public class SocialNet {
         } else {
             if (vertices.get(id).getAcquaintances().size() == 0) {
                 throw new Myanf(id);
-            } else {
-                return vertices.get(id).getBestAcquaintance();
-            }
+            } else { return vertices.get(id).getBestAcquaintance(); }
         }
     }
 
@@ -380,9 +369,7 @@ public class SocialNet {
         for (Vertex v : vertices.values()) {
             if (v.hasBestAcquaintance() &&
                     vertices.get(v.getBestAcquaintance()).getBestAcquaintance() == v.getId()) {
-                ++result;
-            }
-        }
+                ++result; } }
         return result / 2;
     }
 
@@ -403,12 +390,9 @@ public class SocialNet {
                 vertices.get(id2).delAcquaintance(id1);
                 updateDisjoint(id1);
                 updateDisjoint(id2);
-
             } else {
                 vertices.get(id1).addAcquaintance(id2,value);
-                vertices.get(id2).addAcquaintance(id1,value);
-            }
-        }
+                vertices.get(id2).addAcquaintance(id1,value); } }
     }
 
     private void updateDisjoint(int id) {
@@ -425,38 +409,27 @@ public class SocialNet {
             for (int neighbor : vertices.get(current).getAcquaintances()) {
                 if (!visited.contains(neighbor)) {
                     visited.add(neighbor);
-                    queue.offer(neighbor);
-                }
-            }
-        }
+                    queue.offer(neighbor); } } }
     }
 
-    public boolean containsEmojiId(int id) {
-        return emojiId2Heat.containsKey(id);
-    }
+    public boolean containsEmojiId(int id) { return emojiId2Heat.containsKey(id); }
 
     public void storeEmojiId(int id) throws EqualEmojiIdException {
         if (emojiId2Heat.containsKey(id)) {
             throw new Myeei(id);
-        } else {
-            emojiId2Heat.put(id,0);
-        }
+        } else { emojiId2Heat.put(id,0); }
     }
 
     public int queryMoney(int id) throws PersonIdNotFoundException {
         if (!contains(id)) {
             throw new Mypinf(id);
-        } else {
-            return vertices.get(id).getMoney();
-        }
+        } else { return vertices.get(id).getMoney(); }
     }
 
     public int queryPopularity(int id) throws EmojiIdNotFoundException {
         if (!containsEmojiId(id)) {
             throw new Myeinf(id);
-        } else {
-            return emojiId2Heat.get(id);
-        }
+        } else { return emojiId2Heat.get(id); }
     }
 
     public int deleteColdEmoji(int limit) {
@@ -472,9 +445,7 @@ public class SocialNet {
     public void clearNotices(int personId) throws PersonIdNotFoundException {
         if (!contains(personId)) {
             throw new Mypinf(personId);
-        } else {
-            vertices.get(personId).clearNotices();
-        }
+        } else { vertices.get(personId).clearNotices(); }
     }
 
     public int queryLeastMoments(int id) throws PersonIdNotFoundException, PathNotFoundException {
@@ -483,107 +454,39 @@ public class SocialNet {
         } else {
             Vertex v = vertices.get(id);
             int result = Integer.MAX_VALUE;
-
             for (int neighborId : v.getAcquaintances()) {
                 int ret = dijkstra(id,neighborId);
                 if (ret == Integer.MAX_VALUE) {
                     continue;
-                }
-                result = Math.min(result,ret + v.queryValue(neighborId));
+                } result = Math.min(result,ret + v.queryValue(neighborId));
             }
             if (result == Integer.MAX_VALUE) {
                 throw new Mypnf(id);
-            } else {
-                return result;
-            }
+            } else { return result; }
         }
     }
 
     private int dijkstra(int src,int dst) {
         PriorityQueue<Node> pq = new PriorityQueue<>();
         HashMap<Integer,Integer> id2dist = new HashMap<>();
-        for (int id : vertices.keySet()) {
-            id2dist.put(id,Integer.MAX_VALUE);
-        }
+        for (int id : vertices.keySet()) { id2dist.put(id,Integer.MAX_VALUE); }
         id2dist.put(src,0);
         pq.add(new Node(src, 0));
         HashSet<Integer> settled = new HashSet<>();
         while (!settled.contains(dst)) {
-            if (pq.isEmpty()) {
-                return id2dist.getOrDefault(dst,Integer.MAX_VALUE);
-            }
+            if (pq.isEmpty()) { return id2dist.getOrDefault(dst,Integer.MAX_VALUE); }
             int u = pq.remove().getNode();
-            if (settled.contains(u)) {
-                continue;
-            }
+            if (settled.contains(u)) { continue; }
             settled.add(u);
             for (int v : vertices.get(u).getAcquaintances()) {
-                if ((u == src && v == dst) || (u == dst && v == src)) {
-                    continue;
-                }
+                if ((u == src && v == dst) || (u == dst && v == src)) { continue; }
                 int newDist = id2dist.get(u) + vertices.get(u).queryValue(v);
                 if (newDist < id2dist.get(v)) {
                     id2dist.put(v,newDist);
                 }
                 pq.add(new Node(v, id2dist.get(v)));
             }
-        }
-        return id2dist.get(dst);
-    }
-
-    public int deleteColdEmojiOKTest(int limit, ArrayList<HashMap<Integer, Integer>> beforeData,
-                                     ArrayList<HashMap<Integer, Integer>> afterData, int result) {
-        HashMap<Integer,Integer> oldEmoji = beforeData.get(0);
-        HashMap<Integer,Integer> newEmoji = afterData.get(0);
-        HashMap<Integer,Integer> newMessage = afterData.get(1);
-        int length = 0;
-        for (Map.Entry<Integer,Integer> id2heat : oldEmoji.entrySet()) {
-            if (id2heat.getValue() >= limit) {
-                ++length;
-                if (!newEmoji.containsKey(id2heat.getKey())) {
-                    return 1;
-                }
-            }
-        }
-        for (Map.Entry<Integer,Integer> id2heat : newEmoji.entrySet()) {
-            if (!oldEmoji.containsKey(id2heat.getKey())) {
-                return 2;
-            } else {
-                if (!Objects.equals(oldEmoji.get(id2heat.getKey()), id2heat.getValue())) {
-                    return 2;
-                }
-            }
-        }
-        if (length != newEmoji.size()) {
-            return 3;
-        }
-        if (newEmoji.keySet().size() != newEmoji.values().size()) {
-            return 4;
-        }
-        length = 0;
-        HashMap<Integer,Integer> oldMessage = beforeData.get(1);
-        for (Map.Entry<Integer,Integer> m2e : oldMessage.entrySet()) {
-            if (m2e.getValue() != null && newEmoji.containsKey(m2e.getValue())) {
-                if (!newMessage.containsKey(m2e.getKey())
-                        || !Objects.equals(newMessage.get(m2e.getKey()), m2e.getValue())) {
-                    return 5;
-                }
-                ++length;
-            } else if (m2e.getValue() == null) {
-                if (!newMessage.containsKey(m2e.getKey())
-                        || !Objects.equals(newMessage.get(m2e.getKey()),m2e.getValue())) {
-                    return 6;
-                }
-                ++length;
-            }
-        }
-        if (length != newMessage.size()) {
-            return 7;
-        }
-        if (result != newEmoji.size()) {
-            return 8;
-        }
-        return 0;
+        } return id2dist.get(dst);
     }
 }
 
