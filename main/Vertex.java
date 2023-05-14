@@ -3,7 +3,13 @@ package main;
 import com.oocourse.spec2.main.Message;
 import com.oocourse.spec2.main.Person;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Vertex {
 
@@ -87,12 +93,7 @@ public class Vertex {
         edges.remove(new Edge(this.id,id,acquaintances.getOrDefault(id,0)));
         acquaintances.put(id,acquaintances.getOrDefault(id,0) + value);
         edges.add(new Edge(this.id,id,acquaintances.get(id)));
-        if (bestAcquaintance == null ||
-                id == bestAcquaintance || maxValue < acquaintances.get(id)) {
-            refresh();
-        } else if (Objects.equals(maxValue, acquaintances.get(id))) {
-            bestAcquaintance = Math.min(id,bestAcquaintance);
-        }
+        refresh();
     }
 
     public Set<Integer> getAcquaintances() {
@@ -135,16 +136,16 @@ public class Vertex {
             if (maxValue == null || id2value.getValue() > maxValue) {
                 maxValue = id2value.getValue();
                 bestAcquaintance = id2value.getKey();
+            } else if (id2value.getValue().equals(maxValue)) {
+                bestAcquaintance = Math.min(bestAcquaintance,id2value.getKey());
             }
         }
     }
 
     public void delAcquaintance(int id) {
         int tmpValue = acquaintances.remove(id);
-        if (bestAcquaintance == id) {
-            refresh();
-        }
         edges.remove(new Edge(this.id,id,tmpValue));
+        refresh();
     }
 
     public boolean hasBestAcquaintance() {

@@ -358,6 +358,7 @@ public class SocialNet {
                 vertices.get(id2).delAcquaintance(id1);
                 updateDisjoint(id1);
                 updateDisjoint(id2);
+
             } else {
                 vertices.get(id1).setAcquaintance(id2,value);
                 vertices.get(id2).setAcquaintance(id1,value);
