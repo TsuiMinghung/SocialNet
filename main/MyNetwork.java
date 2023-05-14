@@ -1,18 +1,18 @@
 package main;
 
-import com.oocourse.spec2.exceptions.AcquaintanceNotFoundException;
-import com.oocourse.spec2.exceptions.EqualGroupIdException;
-import com.oocourse.spec2.exceptions.EqualMessageIdException;
-import com.oocourse.spec2.exceptions.EqualPersonIdException;
-import com.oocourse.spec2.exceptions.EqualRelationException;
-import com.oocourse.spec2.exceptions.GroupIdNotFoundException;
-import com.oocourse.spec2.exceptions.MessageIdNotFoundException;
-import com.oocourse.spec2.exceptions.PersonIdNotFoundException;
-import com.oocourse.spec2.exceptions.RelationNotFoundException;
-import com.oocourse.spec2.main.Group;
-import com.oocourse.spec2.main.Message;
-import com.oocourse.spec2.main.Network;
-import com.oocourse.spec2.main.Person;
+import com.oocourse.spec3.exceptions.AcquaintanceNotFoundException;
+import com.oocourse.spec3.exceptions.EqualGroupIdException;
+import com.oocourse.spec3.exceptions.EqualMessageIdException;
+import com.oocourse.spec3.exceptions.EqualPersonIdException;
+import com.oocourse.spec3.exceptions.EqualRelationException;
+import com.oocourse.spec3.exceptions.GroupIdNotFoundException;
+import com.oocourse.spec3.exceptions.MessageIdNotFoundException;
+import com.oocourse.spec3.exceptions.PersonIdNotFoundException;
+import com.oocourse.spec3.exceptions.RelationNotFoundException;
+import com.oocourse.spec3.main.Group;
+import com.oocourse.spec3.main.Message;
+import com.oocourse.spec3.main.Network;
+import com.oocourse.spec3.main.Person;
 
 import java.util.HashMap;
 import java.util.List;

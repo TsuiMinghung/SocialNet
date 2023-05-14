@@ -1,6 +1,6 @@
 package exceptions;
 
-import com.oocourse.spec2.exceptions.EqualPersonIdException;
+import com.oocourse.spec3.exceptions.EqualPersonIdException;
 
 import java.util.HashMap;
 

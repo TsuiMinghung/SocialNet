@@ -1,6 +1,6 @@
 package exceptions;
 
-import com.oocourse.spec2.exceptions.EqualMessageIdException;
+import com.oocourse.spec3.exceptions.EqualMessageIdException;
 
 import java.util.HashMap;
 

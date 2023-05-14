@@ -1,6 +1,6 @@
 package exceptions;
 
-import com.oocourse.spec2.exceptions.GroupIdNotFoundException;
+import com.oocourse.spec3.exceptions.GroupIdNotFoundException;
 
 import java.util.HashMap;
 

@@ -1,7 +1,7 @@
 package main;
 
-import com.oocourse.spec2.main.Message;
-import com.oocourse.spec2.main.Person;
+import com.oocourse.spec3.main.Message;
+import com.oocourse.spec3.main.Person;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +25,7 @@ public class Vertex {
     private final HashMap<Integer,Integer> acquaintances;
     private final Person person;
     private int socialValue;
+    private int money;
     private final LinkedList<Message> messages;
     private Integer bestAcquaintance;
     private Integer maxValue;
@@ -40,6 +41,7 @@ public class Vertex {
         this.socialValue = 0;
         this.maxValue = null;
         this.edges = new HashSet<>();
+        this.money = 0;
         INSTANCES.put(id,this);
     }
 
@@ -89,7 +91,7 @@ public class Vertex {
         return person;
     }
 
-    public void setAcquaintance(int id,int value) {
+    public void addAcquaintance(int id, int value) {
         edges.remove(new Edge(this.id,id,acquaintances.getOrDefault(id,0)));
         acquaintances.put(id,acquaintances.getOrDefault(id,0) + value);
         edges.add(new Edge(this.id,id,acquaintances.get(id)));

@@ -1,17 +1,17 @@
 package main;
 
-import com.oocourse.spec2.exceptions.AcquaintanceNotFoundException;
-import com.oocourse.spec2.exceptions.EqualGroupIdException;
-import com.oocourse.spec2.exceptions.EqualMessageIdException;
-import com.oocourse.spec2.exceptions.EqualPersonIdException;
-import com.oocourse.spec2.exceptions.EqualRelationException;
-import com.oocourse.spec2.exceptions.GroupIdNotFoundException;
-import com.oocourse.spec2.exceptions.MessageIdNotFoundException;
-import com.oocourse.spec2.exceptions.PersonIdNotFoundException;
-import com.oocourse.spec2.exceptions.RelationNotFoundException;
-import com.oocourse.spec2.main.Group;
-import com.oocourse.spec2.main.Message;
-import com.oocourse.spec2.main.Person;
+import com.oocourse.spec3.exceptions.AcquaintanceNotFoundException;
+import com.oocourse.spec3.exceptions.EqualGroupIdException;
+import com.oocourse.spec3.exceptions.EqualMessageIdException;
+import com.oocourse.spec3.exceptions.EqualPersonIdException;
+import com.oocourse.spec3.exceptions.EqualRelationException;
+import com.oocourse.spec3.exceptions.GroupIdNotFoundException;
+import com.oocourse.spec3.exceptions.MessageIdNotFoundException;
+import com.oocourse.spec3.exceptions.PersonIdNotFoundException;
+import com.oocourse.spec3.exceptions.RelationNotFoundException;
+import com.oocourse.spec3.main.Group;
+import com.oocourse.spec3.main.Message;
+import com.oocourse.spec3.main.Person;
 import exceptions.Myanf;
 import exceptions.Myegi;
 import exceptions.Myemi;
@@ -101,8 +101,8 @@ public class SocialNet {
             throw new Myer(id1,id2);
         } else {
             this.record.clear();
-            this.vertices.get(id1).setAcquaintance(id2,value);
-            this.vertices.get(id2).setAcquaintance(id1,value);
+            this.vertices.get(id1).addAcquaintance(id2,value);
+            this.vertices.get(id2).addAcquaintance(id1,value);
             merge(id1,id2);
         }
     }
@@ -360,8 +360,8 @@ public class SocialNet {
                 updateDisjoint(id2);
 
             } else {
-                vertices.get(id1).setAcquaintance(id2,value);
-                vertices.get(id2).setAcquaintance(id1,value);
+                vertices.get(id1).addAcquaintance(id2,value);
+                vertices.get(id2).addAcquaintance(id1,value);
             }
         }
     }

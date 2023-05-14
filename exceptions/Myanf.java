@@ -1,6 +1,6 @@
 package exceptions;
 
-import com.oocourse.spec2.exceptions.AcquaintanceNotFoundException;
+import com.oocourse.spec3.exceptions.AcquaintanceNotFoundException;
 
 import java.util.HashMap;
 

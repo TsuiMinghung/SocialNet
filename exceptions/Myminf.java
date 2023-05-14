@@ -1,6 +1,6 @@
 package exceptions;
 
-import com.oocourse.spec2.exceptions.MessageIdNotFoundException;
+import com.oocourse.spec3.exceptions.MessageIdNotFoundException;
 
 import java.util.HashMap;
 
