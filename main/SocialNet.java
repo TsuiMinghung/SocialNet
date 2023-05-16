@@ -63,6 +63,7 @@ public class SocialNet {
     private final HashMap<Integer,Integer> emojiId2Heat;
     private int qbs;
     private int qts;
+    private int qlm;
     private final BitSet record;//false means need recalculate,true means last value could be used
 
     private SocialNet() {
@@ -452,17 +453,21 @@ public class SocialNet {
         if (!contains(id)) {
             throw new Mypinf(id);
         } else {
-            Vertex v = vertices.get(id);
-            int result = Integer.MAX_VALUE;
-            for (int neighborId : v.getAcquaintances()) {
-                int ret = dijkstra(id,neighborId);
-                if (ret == Integer.MAX_VALUE) {
-                    continue;
-                } result = Math.min(result,ret + v.queryValue(neighborId));
-            }
-            if (result == Integer.MAX_VALUE) {
-                throw new Mypnf(id);
-            } else { return result; }
+            if (!record.get(2)) {
+                Vertex v = vertices.get(id);
+                int result = Integer.MAX_VALUE;
+                for (int neighborId : v.getAcquaintances()) {
+                    int ret = dijkstra(id,neighborId);
+                    if (ret == Integer.MAX_VALUE) {
+                        continue;
+                    } result = Math.min(result,ret + v.queryValue(neighborId));
+                }
+                if (result == Integer.MAX_VALUE) {
+                    throw new Mypnf(id);
+                } else {
+                    qlm = result;
+                    return result; } }
+            else { return qlm; }
         }
     }
 
