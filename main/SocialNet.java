@@ -465,6 +465,7 @@ public class SocialNet {
                 if (result == Integer.MAX_VALUE) {
                     throw new Mypnf(id);
                 } else {
+                    record.set(2);
                     qlm = result;
                     return result; } }
             else { return qlm; }
